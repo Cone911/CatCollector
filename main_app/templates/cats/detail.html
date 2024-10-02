@@ -36,6 +36,13 @@
         alt="A kabob of kittens"
       />
     </div>
+
+    <h3>Add a Feeding</h3>
+    <form action="" method="POST" class="subsection-content" autocomplete="off">
+      {% csrf_token %} {{ feeding_form.as_p }}
+      <button type="submit" class="btn submit">Add Feeding</button>
+    </form>
+
     <table>
       <thead>
         <tr>
