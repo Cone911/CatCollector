@@ -17,15 +17,19 @@ def cat_index(request):
 
 def cat_detail(request, cat_id):
   cat = Cat.objects.get(id=cat_id)
+  # toys = Toy.objects.all()  # Fetch all toys
+  toy_ids_cat_has = cat.toys.all().values_list('id')
+  toys_cat_doesnt_have = Toy.objects.exclude(id__in=toy_ids_cat_has)
   feeding_form = FeedingForm()
   return render(request, 'cats/detail.html', {
     'cat': cat,
-    'feeding_form': feeding_form
+    'feeding_form': feeding_form,
+    'toys': toys_cat_doesnt_have,
   })
 
 class CatCreate(CreateView):
   model = Cat
-  fields = '__all__'
+  fields = ['name', 'breed', 'description', 'age']
   # success_url = '/cats/{id}'
 
 class CatUpdate(UpdateView):
@@ -63,4 +67,25 @@ class ToyUpdate(UpdateView):
 class ToyDelete(DeleteView):
   model = Toy
   success_url = '/toys/'
+
+def associate_toy(request, cat_id, toy_id):
+    # Note that you can pass a toy's id instead of the whole object
+    
+    # cat = Cat.objects.get(id=cat_id)
+    # cat.toys.add(toy_id)
+    # or in one line:
+
+    Cat.objects.get(id=cat_id).toys.add(toy_id)
+    return redirect('cat-detail', cat_id=cat_id)
+
+# Create the view function. Hint: use Django's .remove() method
+
+def remove_toy(request, cat_id, toy_id):
+  #Look up the cat
+  cat = Cat.objects.get(id=cat_id)
+  #Look up the toy
+  toy = Toy.objects.get(id=toy_id)
+  #Remove the toy from the cat's toys
+  cat.toys.remove(toy)
+  return redirect('cat-detail', cat_id=cat_id)
 
