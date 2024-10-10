@@ -24,6 +24,25 @@
 <div class="feedings-toy-container">
   <section class="feedings">
     <div class="subsection-title">
+      <h2>Photos</h2>
+    </div>
+    {% for photo in cat.photo_set.all %}
+    <img src="{{photo.url}}" alt="Cat Photo">
+    {% empty %}
+      <div>No Photos Uploaded</div>
+    {% endfor %}
+    <form action="{% url 'add-photo' cat.id %}" enctype="multipart/form-data" method="POST">
+      {% csrf_token %}
+      <input type="file" name="photo-file">
+      <br><br>
+      <button type="submit" class="btn submit">Upload Photo</button>
+    </form>
+  </section>
+</div>
+
+<div class="feedings-toy-container">
+  <section class="feedings">
+    <div class="subsection-title">
       <h2>Feedings</h2>
       <img
         src="{% static 'images/cat-cone.svg' %}"
